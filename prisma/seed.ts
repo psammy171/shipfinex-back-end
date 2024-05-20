@@ -12,7 +12,6 @@ async function main() {
       password: '$2b$12$ZwpGuNErXpWaepgbLv0.guA6.B1kImLyUXVOnDZXfhUOViM0LsfoK',
       roles: {
         createMany: {
-          skipDuplicates: true,
           data: [
             {
               id: '3',
