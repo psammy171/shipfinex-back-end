@@ -146,9 +146,14 @@ export class AuthService {
   }
 
   async updatePassword(user: User, body: UpdatePasswordDto) {
+    const dbUsr = await this.prisma.user.findUnique({
+      where: {
+        id: user.id,
+      },
+    });
     const isSamePassword = await bcrypt.compare(
       body.oldPassword,
-      user.password,
+      dbUsr.password,
     );
     if (!isSamePassword) throw new BadRequestException();
     const hashedPassword = await bcrypt.hash(body.newPassword, saltRounds);

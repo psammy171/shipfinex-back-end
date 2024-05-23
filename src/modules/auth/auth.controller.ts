@@ -46,7 +46,7 @@ export class AuthController {
   @UseGuards(UserGuard)
   @Patch('/update-password')
   updatePassword(@Request() req: any, @Body() body: UpdatePasswordDto) {
-    return this.authService.updatePassword(req.currentUser as User, body);
+    return this.authService.updatePassword(req.user as User, body);
   }
 
   @UseGuards(UserGuard)
