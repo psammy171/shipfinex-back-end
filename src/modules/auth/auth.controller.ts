@@ -16,6 +16,7 @@ import { User } from '@prisma/client';
 import { ResetPasswordDto } from './dtos/reset-password.dto';
 import { UpdatePasswordDto } from './dtos/update-password.dto';
 import { ForgotPasswordDto } from './dtos/forgot-password.dto';
+import { UserInfoDto } from './dtos/user-info.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -46,7 +47,7 @@ export class AuthController {
   @UseGuards(UserGuard)
   @Patch('/update-password')
   updatePassword(@Request() req: any, @Body() body: UpdatePasswordDto) {
-    return this.authService.updatePassword(req.currentUser as User, body);
+    return this.authService.updatePassword(req.user as User, body);
   }
 
   @UseGuards(UserGuard)
@@ -59,5 +60,11 @@ export class AuthController {
   @Post('/forgot-password')
   sendPasswordResetLink(@Body() body: ForgotPasswordDto) {
     return this.authService.forgotPassword(body);
+  }
+
+  @UseGuards(UserGuard)
+  @Patch('/update-user-info')
+  updateUserInfo(@Request() req: any, @Body() body: UserInfoDto) {
+    return this.authService.updateUserInfo(req.user as User, body);
   }
 }

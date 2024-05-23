@@ -13,6 +13,7 @@ import { ResetPasswordDto } from './dtos/reset-password.dto';
 import { UpdatePasswordDto } from './dtos/update-password.dto';
 import { MailService } from 'src/util/mail/mail.service';
 import { ForgotPasswordDto } from './dtos/forgot-password.dto';
+import { UserInfoDto } from './dtos/user-info.dto';
 
 const saltRounds = 12;
 
@@ -146,9 +147,14 @@ export class AuthService {
   }
 
   async updatePassword(user: User, body: UpdatePasswordDto) {
+    const dbUsr = await this.prisma.user.findUnique({
+      where: {
+        id: user.id,
+      },
+    });
     const isSamePassword = await bcrypt.compare(
       body.oldPassword,
-      user.password,
+      dbUsr.password,
     );
     if (!isSamePassword) throw new BadRequestException();
     const hashedPassword = await bcrypt.hash(body.newPassword, saltRounds);
@@ -176,5 +182,17 @@ export class AuthService {
       message:
         'You will receive a password reset link on your entered email if you have registered on this site.',
     };
+  }
+
+  async updateUserInfo(user: User, body: UserInfoDto) {
+    const dbUser = await this.prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: body,
+    });
+    delete dbUser.password;
+    delete dbUser.passwordUpdatedAt;
+    return dbUser;
   }
 }
